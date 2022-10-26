@@ -4,8 +4,7 @@ import fs from "fs";
 const calculaTiempo = (tiempo,intervalo) => {
     const date = new Date()
     const tiempoRecordatorio = new Date(tiempo)
-    console.log(tiempoRecordatorio, "DIA:", tiempoRecordatorio.getUTCDay))
-    tiempoRecordatorio.setDate(tiempoRecordatorio.getDay()-intervalo)
+    tiempoRecordatorio.setDate(tiempoRecordatorio.getHours()-intervalo)
     let tiempoEnMilisegundos = (tiempoRecordatorio-date)
     console.log("Fecha recordatorio:",tiempoRecordatorio)
     console.log("Fecha ahora:",date)
@@ -17,7 +16,7 @@ const calculaTiempo = (tiempo,intervalo) => {
 
 const programaRecordatorios = (reservas) => {
     for (let reserva of reservas){
-        reserva.idTimer = setTimeout(()=>enviarRecordatorio(reserva),calculaTiempo(reserva.datetime,1))
+        reserva.idTimer = setTimeout(()=>enviarRecordatorio(reserva),calculaTiempo(reserva.datetime,24))
     }
 }
 
@@ -79,13 +78,13 @@ const setRecordatorios = ()=>{
                 reservaPrev = reservaNueva; // Piso los valores
                 reservaPrev.idTimer = setTimeout(() => {
                     enviarRecordatorio(reservaPrev)
-                }, calculaTiempo(reservasNew.datetime,1)); 
+                }, calculaTiempo(reservasNew.datetime,24)); 
             }
         }
         //La reserva no existia
         else{
             reservaNueva.idTimer = setTimeout(()=>enviarRecordatorio(),
-                                                calculaTiempo(reservaNueva.datetime,1))
+                                                calculaTiempo(reservaNueva.datetime,24))
             nuvevasReservas.push(reservaNueva)
         }
     })
