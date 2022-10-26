@@ -1,10 +1,11 @@
 import fs from "fs";
 // require('log-timestamp');
+import http from 'http'
 
 const calculaTiempo = (tiempo,intervalo) => {
     const date = new Date()
-    const tiempoRecordatorio = new Date(tiempo)
-    tiempoRecordatorio.setDate(tiempoRecordatorio.getHours()-intervalo)
+    let tiempoRecordatorio = new Date(tiempo)
+    tiempoRecordatorio.setUTCHours(tiempoRecordatorio.getUTCHours()-intervalo)
     let tiempoEnMilisegundos = (tiempoRecordatorio-date)
     console.log("Fecha recordatorio:",tiempoRecordatorio)
     console.log("Fecha ahora:",date)
@@ -20,8 +21,29 @@ const programaRecordatorios = (reservas) => {
     }
 }
 
-const enviarRecordatorio = () => {
+const FechaTurno = () => {
+
+}
+
+const enviarRecordatorio = (reserva) => {
     console.log("Mandando Recordatorioooo")
+    const options = {
+        host: 'localhost',
+        port: '2000',
+        path: '/api/recordatorios',       
+        method: 'POST',
+        headers:{
+            'Content-type': 'application/json'
+        }
+    }
+    const date = new Date(reserva.datetime)
+    const data = {
+        destinatario: reserva.email,
+        asunto: `RECORDATORIO Turno dia ${date.getDate()}/${date.getMonth()}`,
+        cuerpo: `ESTIMADO Usuario/a le recordamos que usted tiene un turno el dia ${FechaTurno(date)}`
+
+    }
+    const client = http.request
 }
 
 
@@ -49,18 +71,6 @@ fs.watch(archivo, (event, filename) => {
     setRecordatorios()
   }
 });
-
-    // {
-    //     id: 3,
-    //     datetime: '2022-09-02T19:58:10.406Z',
-    //     userId: 3,
-    //     email: 'joaquinfioriti9@gmail.com',
-    //     branchId: 3,
-    //     idTimer: 1,
-    // }
-
-
-
 
 const setRecordatorios = ()=>{
     let reservasNew = fs.readFileSync("./reservas.json","utf-8")
@@ -91,11 +101,4 @@ const setRecordatorios = ()=>{
     reservasPrev.concat(nuevasReservas)
 }
  
-
-/**
- * 
- * 
- * 
- */
-
 
