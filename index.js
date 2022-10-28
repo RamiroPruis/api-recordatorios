@@ -1,5 +1,5 @@
 import fs from "fs";
-import programaRecordatorios from './sender.js'
+import enviarRecordatorio from './sender.js'
 
 const PORT = 2000
 
@@ -37,7 +37,7 @@ console.log(JSON.parse(reservasPrev))
 reservasPrev = JSON.parse(reservasPrev)
 programaRecordatorios(reservasPrev)
 console.log(reservasPrev)
-console.log("**********************************************")
+console.log("****************")
 
 let fsEspera = false;
 fs.watch(archivo, (event, filename) => {
@@ -84,5 +84,3 @@ const setRecordatorios = ()=>{
 
     
 }
- 
-

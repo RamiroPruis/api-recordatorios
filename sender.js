@@ -1,11 +1,11 @@
-import https from 'https'
+import http from 'http'
 
-const PORT = 2000
+const PORT = 2020
 
-const sendMail = (options,data) => {
-    const req = https.request(options,(res)=>{
+const sendMail = (options,body) => {
+    const req = http.request(options,(res)=>{
         let data = []
-
+        
         res.on('data',(chunk)=>data.push(chunk))
 
         res.on('end',()=>{
@@ -17,17 +17,17 @@ const sendMail = (options,data) => {
             }
         })
     })
-
-    req.write(data)
+    req.write(JSON.stringify(body))
     req.end()
+    console.log("Recordatorio Enviado")
 }
 
 
 const enviarRecordatorio = (reserva) => {
-    console.log("Mandando Recordatorioooo")
+    console.log("Enviando Recordatorio")
     const options = {
-        host: 'localhost',
-        port: `${PORT}`,
+        host: `201.179.7.212`,
+        port: PORT,
         path: '/api/notificaciones',       
         method: 'POST',
         headers:{
@@ -38,8 +38,13 @@ const enviarRecordatorio = (reserva) => {
     const data = {
         destinatario: reserva.email,
         asunto: `RECORDATORIO Turno dia ${date.getDate()}/${date.getMonth()}`,
-        cuerpo: `ESTIMADO Usuario/a le recordamos que usted tiene un turno el dia <s>${date.toLocaleDateString("es-ES",{weekday: "long",month:"long",day:"numeric"})}</s>`
+        cuerpo: `
+                <p>ESTIMADO Usuario/a le recordamos que usted tiene un turno el dia 
+                <s>${date.toLocaleDateString("es-ES",{weekday: "long",month:"long",day:"numeric"})}</s>
+                </p>`
     }
     
     sendMail(options,data)
 }
+
+export default enviarRecordatorio
