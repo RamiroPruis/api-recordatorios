@@ -1,6 +1,7 @@
 import fs from "fs";
-// require('log-timestamp');
-import http from 'http'
+import programaRecordatorios from './sender.js'
+
+const PORT = 2000
 
 const calculaTiempo = (tiempo,intervalo) => {
     const date = new Date()
@@ -21,30 +22,7 @@ const programaRecordatorios = (reservas) => {
     }
 }
 
-const FechaTurno = () => {
 
-}
-
-const enviarRecordatorio = (reserva) => {
-    console.log("Mandando Recordatorioooo")
-    const options = {
-        host: 'localhost',
-        port: '2000',
-        path: '/api/recordatorios',       
-        method: 'POST',
-        headers:{
-            'Content-type': 'application/json'
-        }
-    }
-    const date = new Date(reserva.datetime)
-    const data = {
-        destinatario: reserva.email,
-        asunto: `RECORDATORIO Turno dia ${date.getDate()}/${date.getMonth()}`,
-        cuerpo: `ESTIMADO Usuario/a le recordamos que usted tiene un turno el dia ${FechaTurno(date)}`
-
-    }
-    const client = http.request
-}
 
 
 const archivo = './reservas.json';
