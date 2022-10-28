@@ -4,6 +4,7 @@ import programaRecordatorios from './sender.js'
 const PORT = 2000
 
 const calculaTiempo = (tiempo,intervalo) => {
+    console.log("El tiempo que le pasa por parametro es: ",tiempo)
     const date = new Date()
     let tiempoRecordatorio = new Date(tiempo)
     tiempoRecordatorio.setUTCHours(tiempoRecordatorio.getUTCHours()-intervalo)
@@ -55,8 +56,10 @@ const setRecordatorios = ()=>{
     reservasNew = JSON.parse(reservasNew)
     let nuevasReservas = []
 
+    console.log("el reservas new es ", reservasNew)
+
     reservasNew.forEach(reservaNueva =>{
-        reservaPrev = reservasPrev.find(x => x.id == reservaNueva.id)
+        let reservaPrev = reservasPrev.find(x => x.id == reservaNueva.id)
         //Si la reserva ya existia
         if (reservasPrev != null){
             //Hubo un cambio, hay que resetear el intervalo
@@ -66,7 +69,7 @@ const setRecordatorios = ()=>{
                 reservaPrev = reservaNueva; // Piso los valores
                 reservaPrev.idTimer = setTimeout(() => {
                     enviarRecordatorio(reservaPrev)
-                }, calculaTiempo(reservasNew.datetime,24)); 
+                }, calculaTiempo(reservaNueva.datetime,24)); 
             }
         }
         //La reserva no existia
@@ -76,7 +79,10 @@ const setRecordatorios = ()=>{
             nuvevasReservas.push(reservaNueva)
         }
     })
-    reservasPrev.concat(nuevasReservas)
+
+    reservasPrev = reservasNew
+
+    
 }
  
 
