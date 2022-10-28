@@ -3,6 +3,12 @@ import enviarRecordatorio from './sender.js'
 
 const PORT = 2000
 
+/**
+ * Establece el tiempo de Timeout para el envio del recordatorio del turno
+ * @param tiempo Fecha y hora del turno.
+ * @param intervalo Intervalo de tiempo para enviar el recordatorio. El estandar es 24hs.
+ * @returns tiempo en milisegundos desde la hora actual hasta el envio del recordatorio.
+ */
 const calculaTiempo = (tiempo,intervalo) => {
     console.log("El tiempo que le pasa por parametro es: ",tiempo)
     const date = new Date()
@@ -16,6 +22,10 @@ const calculaTiempo = (tiempo,intervalo) => {
     return tiempoEnMilisegundos
 }
 
+/**
+ * Por cada reserva establece un timeout hasta el tiempo en el que deba enviar el recordatorio. 
+ * @param reservas lista o arreglo de reservas.
+ */
 
 const programaRecordatorios = (reservas) => {
     for (let reserva of reservas){
@@ -23,21 +33,14 @@ const programaRecordatorios = (reservas) => {
     }
 }
 
-
-
-
 const archivo = './reservas.json';
 
 console.log(`Esperando cambios en ${archivo}`);
-
-
 
 let reservasPrev = fs.readFileSync("./reservas.json","utf-8")
 console.log(JSON.parse(reservasPrev))
 reservasPrev = JSON.parse(reservasPrev)
 programaRecordatorios(reservasPrev)
-console.log(reservasPrev)
-console.log("****************")
 
 let fsEspera = false;
 fs.watch(archivo, (event, filename) => {
@@ -51,6 +54,10 @@ fs.watch(archivo, (event, filename) => {
   }
 });
 
+/**
+ * Cuando cambia el archivo, itera sobre el mismo para verificar si hay nuevos recordatorios a enviar, y en caso de haberlos
+ * los envia. 
+ */
 const setRecordatorios = ()=>{
     let reservasNew = fs.readFileSync("./reservas.json","utf-8")
     reservasNew = JSON.parse(reservasNew)
@@ -61,7 +68,7 @@ const setRecordatorios = ()=>{
     reservasNew.forEach(reservaNueva =>{
         let reservaPrev = reservasPrev.find(x => x.id == reservaNueva.id)
         //Si la reserva ya existia
-        if (reservasPrev != null){
+        if (reservaPrev != null){
             //Hubo un cambio, hay que resetear el intervalo
             if (reservaNueva.userId != reservaPrev.userId || reservaNueva.email != reservaPrev.email){
                 console.log("Se modifico la reserva ", reservaNueva.id)
@@ -74,13 +81,10 @@ const setRecordatorios = ()=>{
         }
         //La reserva no existia
         else{
-            reservaNueva.idTimer = setTimeout(()=>enviarRecordatorio(),
+            console.log(reservaNueva)
+            reservaNueva.idTimer = setTimeout(()=>enviarRecordatorio(reservaNueva),
                                                 calculaTiempo(reservaNueva.datetime,24))
-            nuvevasReservas.push(reservaNueva)
         }
     })
-
     reservasPrev = reservasNew
-
-    
 }
