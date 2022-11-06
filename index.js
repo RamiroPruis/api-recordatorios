@@ -33,25 +33,25 @@ const programaRecordatorios = (reservas) => {
     }
 }
 
-const archivo = './reservas.json';
+    const archivo = './reservas.json';
 
-console.log(`Esperando cambios en ${archivo}`);
+    console.log(`Esperando cambios en ${archivo}`);
 
-let reservasPrev = fs.readFileSync("./reservas.json","utf-8")
-console.log(JSON.parse(reservasPrev))
-reservasPrev = JSON.parse(reservasPrev)
-programaRecordatorios(reservasPrev)
+    let reservasPrev = fs.readFileSync("./reservas.json","utf-8")
+    console.log(JSON.parse(reservasPrev))
+    reservasPrev = JSON.parse(reservasPrev)
+    programaRecordatorios(reservasPrev)
 
-let fsEspera = false;
-fs.watch(archivo, (event, filename) => {
-  if (filename) {
-    if (fsEspera) return;
-    fsEspera = setTimeout(() => {
-      fsEspera = false;
-    }, 1000);
-    console.log(`${filename} El archivo ha cambiado`);
-    setRecordatorios()
-  }
+    let fsEspera = false;
+    fs.watch(archivo, (event, filename) => {
+    if (filename) {
+        if (fsEspera) return;
+        fsEspera = setTimeout(() => {
+        fsEspera = false;
+        }, 1000);
+        console.log(`${filename} El archivo ha cambiado`);
+        setRecordatorios()
+    }
 });
 
 /**
