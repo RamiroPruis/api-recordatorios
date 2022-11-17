@@ -38,7 +38,7 @@ const enviarRecordatorio = (reserva) => {
         // host: `201.179.7.212`,
         host: 'localhost',
         port: PORT,
-        path: '/api/notificaciones',       
+        path: '/api/notificacion',       
         method: 'POST',
         headers:{
             'Content-type': 'application/json'
