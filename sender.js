@@ -44,7 +44,7 @@ const enviarRecordatorio = (reserva) => {
             'Content-type': 'application/json'
         }
     }
-    const date = new Date(reserva.datetime)
+    const date = new Date(reserva.dateTime)
     date.set
     const data = {
         destinatario: reserva.email,

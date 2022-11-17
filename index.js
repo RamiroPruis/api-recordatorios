@@ -7,7 +7,9 @@ const PORT = 2000
  * Establece el tiempo de Timeout para el envio del recordatorio del turno
  * @param tiempo Fecha y hora del turno.
  * @param intervalo Intervalo de tiempo para enviar el recordatorio. El estandar es 24hs.
- * @returns tiempo en milisegundos desde la hora actual hasta el envio del recordatorio.
+ * @returns tiempo en milisegundos desde la hora actual hasta el envio del recordatorio. El valor puede ser 
+ * >0 (se establecera un timeout de dicho tiempo), o <=0 (se envia el recordatorio en forma inmediata)
+ *      
  */
 const calculaTiempo = (tiempo,intervalo) => {
     console.log("El tiempo que le pasa por parametro es: ",tiempo)
@@ -29,7 +31,7 @@ const calculaTiempo = (tiempo,intervalo) => {
 
 const programaRecordatorios = (reservas) => {
     for (let reserva of reservas){
-        reserva.idTimer = setTimeout(()=>enviarRecordatorio(reserva),calculaTiempo(reserva.datetime,24))
+        reserva.idTimer = setTimeout(()=>enviarRecordatorio(reserva),calculaTiempo(reserva.dateTime,24))
     }
 }
 
@@ -56,7 +58,7 @@ fs.watch(archivo, (event, filename) => {
 
 /**
  * Cuando cambia el archivo, itera sobre el mismo para verificar si hay nuevos recordatorios a enviar, y en caso de haberlos
- * los envia. 
+ * los programa para enviarlos.
  */
 const setRecordatorios = ()=>{
     let reservasNew = fs.readFileSync("./reservas.json","utf-8")
@@ -76,14 +78,14 @@ const setRecordatorios = ()=>{
                 reservaPrev = reservaNueva; // Piso los valores
                 reservaPrev.idTimer = setTimeout(() => {
                     enviarRecordatorio(reservaPrev)
-                }, calculaTiempo(reservaNueva.datetime,24)); 
+                }, calculaTiempo(reservaNueva.dateTime,24)); 
             }
         }
         //La reserva no existia
         else{
             console.log(reservaNueva)
             reservaNueva.idTimer = setTimeout(()=>enviarRecordatorio(reservaNueva),
-                                                calculaTiempo(reservaNueva.datetime,24))
+                                                calculaTiempo(reservaNueva.dateTime,24))
         }
     })
     reservasPrev = reservasNew
