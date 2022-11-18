@@ -12,15 +12,11 @@ const PORT = 2000
  *      
  */
 const calculaTiempo = (tiempo,intervalo) => {
-    console.log("El tiempo que le pasa por parametro es: ",tiempo)
     const date = new Date()
     let tiempoRecordatorio = new Date(tiempo)
     tiempoRecordatorio.setUTCHours(tiempoRecordatorio.getUTCHours()-intervalo)
     let tiempoEnMilisegundos = (tiempoRecordatorio-date)
-    console.log("Fecha recordatorio:",tiempoRecordatorio)
-    console.log("Fecha ahora:",date)
 
-    console.log(tiempoEnMilisegundos)
     return tiempoEnMilisegundos
 }
 
@@ -35,37 +31,53 @@ const programaRecordatorios = (reservas) => {
     }
 }
 
-    const archivo = './../Reservas.json';
+const archivo = './../Reservas.json';
 
-    console.log(`Esperando cambios en ${archivo}`);
 
-    let reservasPrev = fs.readFileSync("./../Reservas.json","utf-8")
-    console.log(JSON.parse(reservasPrev))
-    reservasPrev = JSON.parse(reservasPrev)
-    programaRecordatorios(reservasPrev)
 
-    let fsEspera = false;
-    fs.watch(archivo, (event, filename) => {
-    if (filename) {
-        if (fsEspera) return;
-        fsEspera = setTimeout(() => {
-        fsEspera = false;
-        }, 1000);
-        console.log(`${filename} El archivo ha cambiado`);
-        setRecordatorios()
-    }
+let reservasPrev = fs.readFileSync("./../Reservas.json","utf-8")
+
+reservasPrev = JSON.parse(reservasPrev)
+programaRecordatorios(reservasPrev)
+let fsEspera = false;
+fs.watch(archivo, (event, filename) => {
+if (filename) {
+    if (fsEspera) return;
+    fsEspera = setTimeout(() => {
+    fsEspera = false;
+    }, 1000/2);
+    console.log(`${filename} El archivo ha cambiado`);
+    let reservasNew = tryHARD()
+    setRecordatorios(reservasNew)
+}
 });
+
+function tryHARD(){
+
+    try{
+        let reservasNew = fs.readFileSync(archivo,"utf-8")
+        reservasNew = JSON.parse(reservasNew)
+        return reservasNew
+    }catch(e){
+        return tryHARD()
+    }
+
+    
+
+
+}
+
+
+
 
 /**
  * Cuando cambia el archivo, itera sobre el mismo para verificar si hay nuevos recordatorios a enviar, y en caso de haberlos
  * los programa para enviarlos.
  */
-const setRecordatorios = ()=>{
-    let reservasNew = fs.readFileSync("./../Reservas.json","utf-8")
-    reservasNew = JSON.parse(reservasNew)
+const setRecordatorios =  (reservasNew)=>{
+    console.log("NuevaLectura")
     let nuevasReservas = []
 
-    console.log("el reservas new es ", reservasNew)
 
     reservasNew.forEach(reservaNueva =>{
         let reservaPrev = reservasPrev.find(x => x.id == reservaNueva.id)
@@ -73,7 +85,6 @@ const setRecordatorios = ()=>{
         if (reservaPrev != null){
             //Hubo un cambio, hay que resetear el intervalo
             if (reservaNueva.userId != reservaPrev.userId || reservaNueva.email != reservaPrev.email){
-                console.log("Se modifico la reserva ", reservaNueva.id)
                 clearInterval(reservaPrev.idTimer)
                 reservaPrev = reservaNueva; // Piso los valores
                 reservaPrev.idTimer = setTimeout(() => {
@@ -83,7 +94,6 @@ const setRecordatorios = ()=>{
         }
         //La reserva no existia
         else{
-            console.log(reservaNueva)
             reservaNueva.idTimer = setTimeout(()=>enviarRecordatorio(reservaNueva),
                                                 calculaTiempo(reservaNueva.dateTime,24))
         }

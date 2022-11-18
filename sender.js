@@ -9,7 +9,7 @@ const PORT = 2020
  */
 
 const sendMail = (options,body) => {
-    console.log(body)
+
     const req = http.request(options,(res)=>{
         let data = []
         
@@ -19,7 +19,7 @@ const sendMail = (options,body) => {
             
             if (res.statusCode!=202){
                 console.log(`No se pudo mandar el recordatorio a ${body.destinatario}. Reintentando en 5 segundos`)
-                setTimeout(sendMail,5000,options,data)
+                // setTimeout(sendMail,5000,options,data)
             }
         })
     })
@@ -33,7 +33,6 @@ const sendMail = (options,body) => {
  */
 
 const enviarRecordatorio = (reserva) => {
-    console.log("Enviando Recordatorio")
     const options = {
         // host: `201.179.7.212`,
         host: 'localhost',
