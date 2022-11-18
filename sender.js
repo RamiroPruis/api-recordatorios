@@ -9,17 +9,17 @@ const PORT = 2020
  */
 
 const sendMail = (options,body) => {
+    console.log(body)
     const req = http.request(options,(res)=>{
         let data = []
         
         res.on('data',(chunk)=>data.push(chunk))
 
         res.on('end',()=>{
-            let body = JSON.parse(Buffer.concat(data).toString())
-
+            
             if (res.statusCode!=202){
-                console.log(`No se pudo mandar el recordatorio a ${data.email}. Reintentando en 5 segundos`)
-                setTimeout(sendMail(options,data),5000)
+                console.log(`No se pudo mandar el recordatorio a ${body.destinatario}. Reintentando en 5 segundos`)
+                setTimeout(sendMail,5000,options,data)
             }
         })
     })

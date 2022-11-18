@@ -1,7 +1,6 @@
 import fs from "fs";
 import enviarRecordatorio from './sender.js'
 
-
 const PORT = 2000
 
 /**
@@ -36,11 +35,11 @@ const programaRecordatorios = (reservas) => {
     }
 }
 
-    const archivo = '../Reservas.json';
+    const archivo = './../Reservas.json';
 
     console.log(`Esperando cambios en ${archivo}`);
 
-    let reservasPrev = fs.readFileSync("../Reservas.json","utf-8")
+    let reservasPrev = fs.readFileSync("./../Reservas.json","utf-8")
     console.log(JSON.parse(reservasPrev))
     reservasPrev = JSON.parse(reservasPrev)
     programaRecordatorios(reservasPrev)
@@ -62,7 +61,7 @@ const programaRecordatorios = (reservas) => {
  * los programa para enviarlos.
  */
 const setRecordatorios = ()=>{
-    let reservasNew = fs.readFileSync("../Reservas.json","utf-8")
+    let reservasNew = fs.readFileSync("./../Reservas.json","utf-8")
     reservasNew = JSON.parse(reservasNew)
     let nuevasReservas = []
 
