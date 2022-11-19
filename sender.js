@@ -18,11 +18,12 @@ const sendMail = (options,body) => {
         res.on('end',()=>{
             
             if (res.statusCode!=202){
-                console.log(`No se pudo mandar el recordatorio a ${body.destinatario}. Reintentando en 5 segundos`)
-                // setTimeout(sendMail,5000,options,data)
+                setTimeout(sendMail,5000,options,data)
             }
+            
         })
     })
+    req.on('error',()=>console.log("Error al enviar el mail"))
     req.write(JSON.stringify(body))
     req.end()
 }
@@ -55,8 +56,13 @@ const enviarRecordatorio = (reserva) => {
                 </p>`
     }
     
-    sendMail(options,data)
-    console.log("Recordatorio Enviado")
+    if (reserva.email != null && reserva.status == 1){
+        sendMail(options,data)
+    }
+    else{
+        console.log("No se enviara un mail si el mail es nulo y la reserva esta confirmada")
+    }
+    
 }
 
 export default enviarRecordatorio

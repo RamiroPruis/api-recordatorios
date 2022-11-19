@@ -53,7 +53,6 @@ if (filename) {
 });
 
 function tryHARD(){
-
     try{
         let reservasNew = fs.readFileSync(archivo,"utf-8")
         reservasNew = JSON.parse(reservasNew)
@@ -61,10 +60,6 @@ function tryHARD(){
     }catch(e){
         return tryHARD()
     }
-
-    
-
-
 }
 
 
@@ -75,7 +70,6 @@ function tryHARD(){
  * los programa para enviarlos.
  */
 const setRecordatorios =  (reservasNew)=>{
-    console.log("NuevaLectura")
     let nuevasReservas = []
 
 
