@@ -48,7 +48,7 @@ const enviarRecordatorio = (reserva) => {
     date.set
     const data = {
         destinatario: reserva.email,
-        asunto: `RECORDATORIO Turno dia ${date.getDate()}/${date.getMonth()}`,
+        asunto: `RECORDATORIO Turno dia ${date.getDate()}/${date.getMonth() + 1}`,
         cuerpo: `
                 <p>ESTIMADO Usuario/a le recordamos que usted tiene un turno el dia 
                 <b>${date.toLocaleDateString("es-ES",{weekday: "long",month:"long",day:"numeric"})}</b>
