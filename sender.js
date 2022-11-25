@@ -56,7 +56,8 @@ const enviarRecordatorio = (reserva) => {
                 </p>`
     }
     
-    if (reserva.email != null && reserva.status == 1){
+    console.log(reserva)
+    if (reserva.email != null){
         sendMail(options,data)
     }
     else{

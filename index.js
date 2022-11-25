@@ -72,7 +72,6 @@ function tryHARD(){
 const setRecordatorios =  (reservasNew)=>{
     let nuevasReservas = []
 
-
     reservasNew.forEach(reservaNueva =>{
         let reservaPrev = reservasPrev.find(x => x.id == reservaNueva.id)
         //Si la reserva ya existia
